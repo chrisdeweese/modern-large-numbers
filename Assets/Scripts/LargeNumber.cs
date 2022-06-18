@@ -2,7 +2,7 @@
 using UnityEngine;
 using System;
 
-namespace Modern
+namespace ModernProgramming
 {
     [Serializable]
     public class LargeNumber
@@ -11,6 +11,9 @@ namespace Modern
 
         [Range(0, 999)] public List<int> number;
 
+        /// <summary>
+        /// Names for all large numbers.
+        /// </summary>
         public enum Suffixes
         {
             None,                   // 10^0
