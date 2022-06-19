@@ -18,3 +18,14 @@ Import the `ModernProgramming` namespace into your project file to start using M
 `LargeNumber(int newNumber)` - Creates a new large number clamped between 0 and 999.
 
 `LargeNumber(int newNumber, int newSegments)` - Creates a new large number with up to forty-two 3 digit segments (10^123)
+
+------
+
+### TO-DO
+
+- Add(int newNumber)
+- Add(LargeNumber newNumber)
+- Subtract(int newNumber)
+- Subtract(LargeNumber newNumber)
+- RemoveLeadingZeroes()
+- Equals(LargeNumber numberToCompare)
