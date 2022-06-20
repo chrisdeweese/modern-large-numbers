@@ -7,9 +7,15 @@ namespace ModernProgramming
     [Serializable]
     public class LargeNumber
     {
+        #region ## VARIABLES ##
+
         private const int MAX_SEGMENTS = 42;
 
         [Range(0, 999)] public List<int> number;
+
+        #endregion
+        
+        #region ## PUBLIC ENUMS ##
 
         /// <summary>
         /// Names for all large numbers.
@@ -60,6 +66,10 @@ namespace ModernProgramming
             Quadragintillion        // 10^123
         };
 
+        #endregion
+        
+        #region ## PUBLIC METHODS ##
+
         /// <summary>
         /// Creates a new large number with default value of zero.
         /// </summary>
@@ -91,24 +101,6 @@ namespace ModernProgramming
             number = new List<int>();
             number.Add(Mathf.Clamp(newNumber, 0, 999));
         }
-        
-        /// <summary>
-        /// Removes leading zeroes from large number.
-        /// </summary>
-        public void RemoveLeadingZeros()
-        {
-            for (int i = number.Count - 1; i > 0; i--)
-            {
-                if (number[i] == 0)
-                {
-                    number.RemoveAt(i);
-                }
-                else
-                {
-                    break;
-                }
-            }
-        }
 
         /// <summary>
         /// Add one to the large number.
@@ -119,7 +111,7 @@ namespace ModernProgramming
             if (number[0] > 999)
             {
                 number[0] = 0;
-                AddOne(1);
+                AddSegment(1);
             }
         }
 
@@ -132,7 +124,9 @@ namespace ModernProgramming
             if (number[0] < 0)
             {
                 if (number.Count > 1)
-                    SubtractOne(1);
+                {
+                    SubtractSegment(1);
+                }
                 else
                 {
                     number[0] = 0;
@@ -152,61 +146,72 @@ namespace ModernProgramming
             if (difference > 0)
             {
                 for (int i = 0; i < difference; i++)
+                {
                     numberToAdd.number.Add(000);
+                }
             }
             else if (difference < 0)
             {
                 for (int i = 0; i > difference; i--)
+                {
                     number.Add(000);
+                }
             }
+            
             for (int i = 0; i < number.Count; i++)
             {
                 difference = number.Count - numberToAdd.number.Count;
                 if (difference > 0)
                 {
-                    for (int o = 0; o < difference; o++)
+                    for (int j = 0; j < difference; j++)
+                    {
                         numberToAdd.number.Add(000);
+                    }
                 }
                 else if (difference < 0)
                 {
-                    for (int o = 0; o > difference; o--)
+                    for (int j = 0; j > difference; j--)
+                    {
                         number.Add(000);
+                    }  
                 }
 
-                int carry = 0;
-                int total = number[i] + numberToAdd.number[i] + carry;
-                if (total > 999)
+                int carryAmount = 0;
+                int totalAmount = number[i] + numberToAdd.number[i] + carryAmount;
+                
+                if (totalAmount > 999)
                 {
                     //carry
-                    carry = (int)total / 1000;
+                    carryAmount = totalAmount / 1000;
+                    
                     //remainder
-                    int newNumber = total - (carry * 1000);
+                    int newNumber = totalAmount - (carryAmount * 1000);
 
                     number[i] = newNumber;
                     if (i == number.Count - 1)
                     {
-                        number.Add(carry);
-                        carry = 0;
+                        number.Add(carryAmount);
+                        carryAmount = 0;
                     }
                     else
                     {
-                        AddLargeNumber(i + 1, carry);
+                        AddLargeNumber(i + 1, carryAmount);
                     }
                 }
                 else
                 {
-                    number[i] = total;
+                    number[i] = totalAmount;
                 }
             }
-            //number = result;
+            
             RemoveLeadingZeros();
             numberToAdd.RemoveLeadingZeros();
 
             if (number.Count > MAX_SEGMENTS)
             {
-                for (int n = 0; n < number.Count; n++)
+                for (int i = 0; i < number.Count; i++)
                 {
-                    number[n] = 999;
+                    number[i] = 999;
                 }
                 number.RemoveRange(MAX_SEGMENTS, number.Count - MAX_SEGMENTS);
             }
@@ -216,30 +221,28 @@ namespace ModernProgramming
         /// Subtracts a large number from this large number.
         /// </summary>
         /// <param name="numberToSubtract"></param>
-        public void SubLargeNumber(LargeNumber numberToSubtract)
+        public void SubtractLargeNumber(LargeNumber numberToSubtract)
         {
             LargeNumber temp = new LargeNumber();
             temp.Assign(numberToSubtract);
-            if (Equals(temp) <= 0)
+            
+            if (IsEqual(temp) || IsLessThan(temp))
             {
                 number.Clear();
                 number.Add(000);
             }
             else
             {
-                //get string of largeNumber parameter
                 string amountString = temp.LargeNumberToString();
-                //compare length of numbers
+                
                 int digitDifference = LargeNumberToString().Length - amountString.Length;
-                //make numbers the same digits
+                
                 for (int i = 0; i < digitDifference; i++)
                 {
                     amountString = "0" + amountString;
                 }
-                //Debug.Log("amountString: " + amountString);
-                //create 9's compliment of p_amountString
+                
                 string number9sCompliment = "";
-                //for (int i = amountString.Length-1; i > 0; i--)
                 for (int i = 0; i < amountString.Length; i++)
                 {
                     if (amountString[i].Equals('0'))
@@ -283,10 +286,11 @@ namespace ModernProgramming
                         number9sCompliment += "0";
                     }
                 }
-                //SUB
+                
                 temp.Assign(temp.StringToLargeNumber(number9sCompliment));
                 int digits = LargeNumberToString().Length;
                 AddLargeNumber(temp);
+                
                 //check to see if there is a carry
                 if (digits < LargeNumberToString().Length)
                 {
@@ -317,52 +321,112 @@ namespace ModernProgramming
         }
 
         /// <summary>
-        /// Check if large number is equal to this large number.
+        /// Checks if a large number is greater than this large number.
         /// </summary>
-        /// <param name="numberToCompare"></param>
-        public int Equals(LargeNumber numberToCompare)
+        public bool IsGreaterThan(LargeNumber numberToCompare)
         {
-            int match = 0;
             if (number.Count == numberToCompare.number.Count)
             {
                 for (int i = number.Count - 1; i >= 0; i--)
                 {
-                    if (number[i] != numberToCompare.number[i])
+                    if (number[i] != numberToCompare.number[i] && number[i] > numberToCompare.number[i])
                     {
-                        if (number[i] > numberToCompare.number[i])
-                            match = 1;
-                        else
-                            match = -1;
-                        break;
+                        return true; 
                     }
                 }
             }
-            else
+            else if (number.Count > numberToCompare.number.Count)
             {
-                if (number.Count > numberToCompare.number.Count)
-                    match = 1;
-                else
-                    match = -1;
+                return true;
             }
 
-            return match;
+            return false;
         }
 
-        //TODO: ASSIGNMENT
-        public void Assign(LargeNumber p_num)
+        /// <summary>
+        /// Checks if a large number is less than this large number.
+        /// </summary>
+        public bool IsLessThan(LargeNumber numberToCompare)
+        {
+            if (number.Count == numberToCompare.number.Count)
+            {
+                for (int i = number.Count - 1; i >= 0; i--)
+                {
+                    if (number[i] != numberToCompare.number[i] && number[i] > numberToCompare.number[i])
+                    {
+                        return false;   
+                    }
+                }
+            }
+            else if (number.Count > numberToCompare.number.Count)
+            {
+                return false;
+            }
+
+            return true;
+        }
+
+        /// <summary>
+        /// Checks if a large number is equal to this large number.
+        /// </summary>
+        public bool IsEqual(LargeNumber numberToCompare)
+        {
+            if (number.Count == numberToCompare.number.Count)
+            {
+                for (int i = number.Count - 1; i >= 0; i--)
+                {
+                    if (number[i] != numberToCompare.number[i] && number[i] == numberToCompare.number[i])
+                    {
+                        return true;
+                    }
+                }
+            }
+
+            return false;
+        }
+
+        /// <summary>
+        /// Assign a large number to this variable.
+        /// </summary>
+        public void Assign(LargeNumber numberToAssign)
         {
             number.Clear();
-            foreach (int i in p_num.number)
+            foreach (int i in numberToAssign.number)
             {
                 number.Add(i);
             }
         }
         
+        /// <summary>
+        /// Removes leading zeroes from this large number.
+        /// </summary>
+        public void RemoveLeadingZeros()
+        {
+            for (int i = number.Count - 1; i > 0; i--)
+            {
+                if (number[i] == 0)
+                {
+                    number.RemoveAt(i);
+                }
+                else
+                {
+                    break;
+                }
+            }
+        }
+        
+        /// <summary>
+        /// Converts this large number into a string with a suffix.
+        /// </summary>
         public string LargeNumberToShortString()
         {
             if (number.Count == 0)
+            {
                 return "0";
+            }
+                
             string result = "" + number[number.Count - 1];
+            
             if (number.Count > 1)
             {
                 result += "." + string.Format("{0:000}", number[number.Count - 2]);
@@ -372,9 +436,13 @@ namespace ModernProgramming
             return result;
         }
 
+        /// <summary>
+        /// Converts this large number into a string.
+        /// </summary>
         public string LargeNumberToString()
         {
             string result = "";
+            
             for (int i = number.Count - 1; i >= 0; i--)
             {
                 if (number[i] < 100)
@@ -389,19 +457,22 @@ namespace ModernProgramming
             return result;
         }
 
-        public LargeNumber StringToLargeNumber(string p_str)
+        /// <summary>
+        /// Converts this string into a large number.
+        /// </summary>
+        public LargeNumber StringToLargeNumber(string stringToConvert)
         {
             LargeNumber result = new LargeNumber();
 
-            while (p_str.Length % 3 != 0)
+            while (stringToConvert.Length % 3 != 0)
             {
-                p_str = "0" + p_str;
+                stringToConvert = "0" + stringToConvert;
             }
 
             //for substring second parameter is length
-            for (int i = 0; i < p_str.Length; i += 3)
+            for (int i = 0; i < stringToConvert.Length; i += 3)
             {
-                result.number.Add(int.Parse(p_str.Substring(i, 3)));
+                result.number.Add(int.Parse(stringToConvert.Substring(i, 3)));
             }
 
             result.number.Reverse();
@@ -421,15 +492,22 @@ namespace ModernProgramming
             return result;
         }
         
+        /// <summary>
+        /// Clamps the number list.
+        /// </summary>
         public void ClampList()
-    {
-        if (number.Count > MAX_SEGMENTS)
-            number.RemoveRange(MAX_SEGMENTS, number.Count - MAX_SEGMENTS);
-    }
+        {
+            if (number.Count > MAX_SEGMENTS)
+            {
+                number.RemoveRange(MAX_SEGMENTS, number.Count - MAX_SEGMENTS);
+            }  
+        }
+
+        #endregion
 
         #region ## Private Methods ##
 
-        private void AddOne(int segmentCount)
+        private void AddSegment(int segmentCount)
         {
             if (number.Count == segmentCount)
             {
@@ -444,15 +522,15 @@ namespace ModernProgramming
                 if (number[segmentCount] > 999)
                 {
                     number[segmentCount] = 0;
-                    AddOne(segmentCount + 1);
+                    AddSegment(segmentCount + 1);
                 }
             }
         }
         
-        private void SubtractOne(int p_count)
+        private void SubtractSegment(int segmentCount)
         {
             bool flag = true;
-            for (int i = p_count; i < number.Count; i++)
+            for (int i = segmentCount; i < number.Count; i++)
             {
                 if (number[i] != 0)
                 {

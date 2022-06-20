@@ -12,7 +12,12 @@ Import the `ModernProgramming` namespace into your project file to start using M
 ### Public Enums
 `LargeNumber.Suffixes` - Names for all large numbers.
 
+------
+
 ### Public Methods
+
+#### Creating a new Large Number
+
 `LargeNumber()` - Creates a new large number with default value of zero.
 
 `LargeNumber(int newNumber)` - Creates a new large number clamped between 0 and 999.
@@ -21,11 +26,44 @@ Import the `ModernProgramming` namespace into your project file to start using M
 
 ------
 
+#### Basic Math Operations
+
+`LargeNumber.AddOne()` - Add one to the large number.
+
+`LargeNumber.SubtractOne()` - Subtract one from the large number.
+
+`LargeNumber.AddLargeNumber(LargeNumber numberToAdd)` - Adds a large number to this large number.
+
+`LargeNumber.SubtractLargeNumber(LargeNumber numberToSubtract)` - Subtracts a large number from this large number.
+
+------
+
+#### Equality Checks
+
+`LargeNumber.IsGreaterThan(LargeNumber numberToCompare)` - (bool) Checks if a large number is greater than this large number.
+
+`LargeNumber.IsLessThan(LargeNumber numberToCompare)` - (bool) Checks if a large number is less than this large number.
+
+`LargeNumber.IsEqual(LargeNumber numberToCompare)` - (bool) Checks if a large number is equal to this large number.
+
+------
+
+#### Utility Methods
+
+`LargeNumber.Assign(LargeNumber numberToAssign)` - Assign a large number to this variable.
+
+`LargeNumber.RemoveLeadingZeros()` - Removes leading zeroes from this large number.
+
+`LargeNumber.LargeNumberToShortString()` - (string) Converts this large number into a string with a suffix.
+
+`LargeNumber.LargeNumberToString()` - (string) Converts this large number into a string.
+
+`LargeNumber.StringToLargeNumber(string stringToConvert)` - (LargeNumber) Converts this string into a large number.
+
+`LargeNumber.ClampList()` - Clamps the number list.
+
+------
+
 ### TO-DO
 
-- Add(int newNumber)
-- Add(LargeNumber newNumber)
-- Subtract(int newNumber)
-- Subtract(LargeNumber newNumber)
-- RemoveLeadingZeroes()
-- Equals(LargeNumber numberToCompare)
+- Create a demo scene.
