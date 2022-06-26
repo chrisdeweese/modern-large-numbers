@@ -1,5 +1,5 @@
 # modern-large-numbers
-A library to handle creation and usage of large numbers up to 999.999 Quadragintillion, or 10^123 decimal places.
+A simple API to create, add, and subtract large numbers up to 999.9 Quadragintillion, or 10^123 decimal places.
 
 ------
 
