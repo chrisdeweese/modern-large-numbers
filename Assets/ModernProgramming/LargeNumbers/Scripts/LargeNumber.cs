@@ -185,9 +185,9 @@ namespace ModernProgramming
                     carryAmount = totalAmount / 1000;
                     
                     //remainder
-                    int newNumber = totalAmount - (carryAmount * 1000);
+                    int remainder = totalAmount - (carryAmount * 1000);
 
-                    number[i] = newNumber;
+                    number[i] = remainder;
                     if (i == number.Count - 1)
                     {
                         number.Add(carryAmount);
@@ -430,6 +430,7 @@ namespace ModernProgramming
             if (number.Count > 1)
             {
                 result += "." + string.Format("{0:000}", number[number.Count - 2]);
+                result = result.Remove(result.Length - 2, 2);
                 result += " " + (Suffixes)(number.Count - 1);
             }
 
@@ -453,6 +454,11 @@ namespace ModernProgramming
             }
 
             result = result.TrimStart('0');
+
+            if (result == "")
+            {
+                result = "0";
+            }
 
             return result;
         }
@@ -556,10 +562,11 @@ namespace ModernProgramming
             {
                 //carry
                 carry = (int)total / 1000;
-                //remander
-                int remander = total - (carry * 1000);
+                
+                //remainder
+                int remainder = total - (carry * 1000);
 
-                number[count] = remander;
+                number[count] = remainder;
                 if (count == number.Count - 1)
                 {
                     number.Add(carry);
