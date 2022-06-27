@@ -12,6 +12,7 @@ namespace ModernProgramming
         public Toggle shortStringToggle;
         public InputField addLargeInput;
         public InputField subLargeInput;
+        public InputField multiLargeInput;
         public InputField assignInput;
 
         private LargeNumber myLargeNumber = new LargeNumber();
@@ -76,6 +77,22 @@ namespace ModernProgramming
             UpdateUI();
         }
 
+        // Takes the inputted large number and multiplies to our large number.
+        public void onClick_MultiplyLargeNumber()
+        {
+            // Create a new empty large number.
+            LargeNumber numberToMultiply = new LargeNumber();
+            
+            // Convert the input field's string into a large number.
+            numberToMultiply = numberToMultiply.StringToLargeNumber(multiLargeInput.text);
+            
+            // Multiplies the converted number to our large number.
+            myLargeNumber = myLargeNumber.MultiplyLargeNumber(myLargeNumber, numberToMultiply);
+            
+            UpdateUI();
+        }
+
+        // Takes the inputted large number and assigns it to our large number.
         public void onClick_AssignNumber()
         {
             // Create a new empty large number.
