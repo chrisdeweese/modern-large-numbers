@@ -36,6 +36,8 @@ Import the `ModernProgramming` namespace into your project file to start using M
 
 `LargeNumber.SubtractLargeNumber(LargeNumber numberToSubtract)` - Subtracts a large number from this large number.
 
+`LargeNumber.MultiplyLargeNumber(LargeNumber numberA, LargeNumber numberB)` - (LargeNumber) Multiplies two large numbers together.
+
 ------
 
 #### Equality Checks
@@ -66,4 +68,7 @@ Import the `ModernProgramming` namespace into your project file to start using M
 
 ### TO-DO
 
-- Test backwards compatability.
+- Test engine backwards compatability.
+- Test math operations past 123 digits.
+- Implement division.
+- Implement float decimal math.
