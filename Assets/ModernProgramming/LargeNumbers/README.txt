@@ -36,6 +36,8 @@ Import the `ModernProgramming` namespace into your project file to start using M
 
 `LargeNumber.SubtractLargeNumber(LargeNumber numberToSubtract)` - Subtracts a large number from this large number.
 
+`LargeNumber.MultiplyLargeNumber(LargeNumber numberA, LargeNumber numberB)` - (LargeNumber) Multiplies two large numbers together.
+
 ------
 
 #### Equality Checks
