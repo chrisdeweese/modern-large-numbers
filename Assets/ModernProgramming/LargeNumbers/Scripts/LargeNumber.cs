@@ -105,8 +105,7 @@ namespace ModernProgramming
                 newSegments = MAX_SEGMENTS;
             }
 
-            number = new List<int>();
-            number.Add(Mathf.Clamp(newNumber, 0, 999));
+            number = new List<int> { Mathf.Clamp(newNumber, 0, 999) };
         }
 
         /// <summary>
@@ -145,7 +144,7 @@ namespace ModernProgramming
         /// <summary>
         /// Adds a large number to this large number.
         /// </summary>
-        /// <param name="numberToAdd">Number to add.</param>
+        /// <param name="numberToAdd">The large number to add to the current large number.</param>
         public void AddLargeNumber(LargeNumber numberToAdd)
         {
             int difference = number.Count - numberToAdd.number.Count;
@@ -227,7 +226,7 @@ namespace ModernProgramming
         /// <summary>
         /// Subtracts a large number from this large number.
         /// </summary>
-        /// <param name="numberToSubtract"></param>
+        /// <param name="numberToSubtract">The large number to subtract from the current large number.</param>
         public void SubtractLargeNumber(LargeNumber numberToSubtract)
         {
             LargeNumber temp = new LargeNumber();
@@ -301,7 +300,7 @@ namespace ModernProgramming
                 //check to see if there is a carry
                 if (digits < LargeNumberToString().Length)
                 {
-                    int addCarry = number[number.Count - 1];
+                    int addCarry = number[^1];
                     int subCarry = 1;
 
                     if (addCarry > 9)
@@ -316,9 +315,9 @@ namespace ModernProgramming
                     }
                     subCarry *= addCarry;
 
-                    number[number.Count - 1] -= subCarry;
-                    if (number[number.Count - 1] < 1)
-                        number[number.Count - 1] = 0;
+                    number[^1] -= subCarry;
+                    if (number[^1] < 1)
+                        number[^1] = 0;
                     temp = new LargeNumber(addCarry);
                     AddLargeNumber(temp);
                 }
@@ -330,8 +329,8 @@ namespace ModernProgramming
         /// <summary>
         /// Multiplies two large numbers together.
         /// </summary>
-        /// <param name="numberA">First large number.</param>
-        /// <param name="numberB">Second large number.</param>
+        /// <param name="numberA">First large number to multiply</param>
+        /// <param name="numberB">Second large number to multiply.</param>
         /// <returns></returns>
         public LargeNumber MultiplyLargeNumber(LargeNumber numberA, LargeNumber numberB)
         {
@@ -340,16 +339,16 @@ namespace ModernProgramming
             string bottom = numberB.LargeNumberToString();
             
             // Setup our int arrays.
-            this.MultiplyMaxLength = top.Length + bottom.Length;
-            this.Top = new int[top.Length];
-            this.Bottom = new int[bottom.Length];
-            this.Answer = new int[this.MultiplyMaxLength];
-            this.Carry = new int[this.MultiplyMaxLength];
+            MultiplyMaxLength = top.Length + bottom.Length;
+            Top = new int[top.Length];
+            Bottom = new int[bottom.Length];
+            Answer = new int[MultiplyMaxLength];
+            Carry = new int[MultiplyMaxLength];
             
             // Initialize Answer array with zeroes.
             for (int i = 0; i < MultiplyMaxLength; i++)
             {
-                this.Answer[i] = 0;
+                Answer[i] = 0;
             }
             
             // Convert string into int, then store in top array.
@@ -487,11 +486,11 @@ namespace ModernProgramming
                 return "0";
             }
                 
-            string result = "" + number[number.Count - 1];
+            string result = "" + number[^1];
             
             if (number.Count > 1)
             {
-                result += "." + string.Format("{0:000}", number[number.Count - 2]);
+                result += "." + $"{number[^2]:000}";
                 result = result.Remove(result.Length - 2, 2);
                 result += " " + (Suffixes)(number.Count - 1);
             }
@@ -647,45 +646,45 @@ namespace ModernProgramming
         
         private int[] Multiply()
         {
-            int bottomIndex = this.Bottom.Length - 1;
+            int bottomIndex = Bottom.Length - 1;
             int placeOffset = 1;
 
             while (bottomIndex >= 0)
             {
                 // Reset the carry to 0.
-                for (int i = 0; i < this.MultiplyMaxLength; i++)
+                for (int i = 0; i < MultiplyMaxLength; i++)
                 {
-                    this.Carry[i] = 0;
+                    Carry[i] = 0;
                 }
                 
                 // Store our next digit index to calculate.
-                int answerIndex = this.MultiplyMaxLength - placeOffset;
+                int answerIndex = MultiplyMaxLength - placeOffset;
 
                 // Iterate through each digit index.
-                for (int topIndex = this.Top.Length - 1; topIndex >= 0; topIndex--)
+                for (int topIndex = Top.Length - 1; topIndex >= 0; topIndex--)
                 {
                     // Calculate the multiplied value for the current digit index and carry remainder.
-                    int topNumber = this.Top[topIndex];
-                    int bottomNumber = this.Bottom[bottomIndex];
-                    int value = (topNumber * bottomNumber) + this.Carry[answerIndex];
+                    int topNumber = Top[topIndex];
+                    int bottomNumber = Bottom[bottomIndex];
+                    int value = (topNumber * bottomNumber) + Carry[answerIndex];
                     int tens = (value / 10) % 10;
                     int ones = value - (tens * 10);
-                    this.Carry[answerIndex - 1] += tens;
+                    Carry[answerIndex - 1] += tens;
 
                     // We have an overflow so calculate the overflow value.
-                    if ((this.Answer[answerIndex] + ones) > 9)
+                    if ((Answer[answerIndex] + ones) > 9)
                     {
                         PerformOverflow(answerIndex, ones);
                     }
                     else
                     {
-                        this.Answer[answerIndex] += ones;
+                        Answer[answerIndex] += ones;
                     }
 
                     // This is the final result of the current digit index.
                     if (topIndex == 0)
                     {
-                        this.Answer[answerIndex - 1] += tens;
+                        Answer[answerIndex - 1] += tens;
                     }
 
                     // Move down the index and repeat.
@@ -698,18 +697,18 @@ namespace ModernProgramming
             }
 
             // Return the final calculated value as an int array.
-            return this.Answer;
+            return Answer;
         }
         
         private void PerformOverflow(int answerIndex, int ones)
         {
             // Adding the answer to it itself
-            int overflow = this.Answer[answerIndex] + ones;
+            int overflow = Answer[answerIndex] + ones;
             int tensOver = (overflow / 10) % 10;
             int onesOver = (overflow - (tensOver * 10));
 
-            this.Answer[answerIndex] = onesOver;
-            this.Answer[answerIndex - 1] += tensOver;
+            Answer[answerIndex] = onesOver;
+            Answer[answerIndex - 1] += tensOver;
         }
 
         #endregion
